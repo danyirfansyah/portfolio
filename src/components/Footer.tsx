@@ -12,8 +12,8 @@ const links = [
 ];
 
 const socials = [
-  { icon: IconBrandGithub, href: "https://github.com", label: "GitHub" },
-  { icon: IconBrandLinkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  { icon: IconBrandGithub, href: "https://github.com/danyirfansyah", label: "GitHub" },
+  { icon: IconBrandLinkedin, href: "https://www.linkedin.com/in/dany-irfansyah/", label: "LinkedIn" },
   { icon: Mail, href: "mailto:danyirfansyah23@gmail.com", label: "Email" },
 ];
 
@@ -74,7 +74,7 @@ export default function Footer() {
         <div className="mt-8 pt-6 border-t border-white/[0.05] flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-600 text-xs flex items-center gap-1.5">
             © {new Date().getFullYear()} Dany Irfansyah. Made with{" "}
-            <Heart size={11} className="text-rose-500 fill-rose-500" /> using Next.js & Tailwind CSS
+             using Next.js & Tailwind CSS
           </p>
           <motion.button
             onClick={scrollToTop}

@@ -1,6 +1,11 @@
 "use client";
 
 import { useRef, useState } from "react";
+import emailjs from "@emailjs/browser";
+
+const EMAILJS_SERVICE_ID = "service_1vj0ilr";
+const EMAILJS_TEMPLATE_ID = "template_gqo6d8a";
+const EMAILJS_PUBLIC_KEY = "uxEWjEblFPa2pUynB";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Mail, Send, CheckCircle, MapPin, Clock } from "lucide-react";
 import { IconBrandGithub, IconBrandLinkedin } from "@tabler/icons-react";
@@ -9,7 +14,7 @@ const socials = [
   {
     icon: IconBrandGithub,
     label: "GitHub",
-    href: "https://github.com",
+    href: "https://github.com/danyirfansyah",
     handle: "@danyirfansyah",
     color: "hover:border-slate-400/40 hover:bg-slate-400/5",
     iconColor: "text-slate-400",
@@ -17,7 +22,7 @@ const socials = [
   {
     icon: IconBrandLinkedin,
     label: "LinkedIn",
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/in/dany-irfansyah/",
     handle: "Dany Irfansyah",
     color: "hover:border-blue-400/40 hover:bg-blue-400/5",
     iconColor: "text-blue-400",
@@ -39,6 +44,7 @@ const infoItems = [
 
 function InputField({
   label,
+  name,
   type = "text",
   placeholder,
   value,
@@ -46,6 +52,7 @@ function InputField({
   required = false,
 }: {
   label: string;
+  name: string;
   type?: string;
   placeholder: string;
   value: string;
@@ -61,6 +68,7 @@ function InputField({
       <div className={`relative rounded-xl border transition-all duration-200 ${focused ? "border-violet-500/50 bg-violet-500/5" : "border-white/10 bg-white/[0.03]"}`}>
         <input
           type={type}
+          name={name}
           required={required}
           placeholder={placeholder}
           value={value}
@@ -85,17 +93,31 @@ function InputField({
 
 export default function Contact() {
   const ref = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(false);
   const [focused, setFocused] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    setForm({ name: "", email: "", subject: "", message: "" });
+    if (!formRef.current) return;
+    setSending(true);
+    setError(false);
+    try {
+      await emailjs.sendForm(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formRef.current, EMAILJS_PUBLIC_KEY);
+      setSent(true);
+      setForm({ name: "", email: "", subject: "", message: "" });
+      setTimeout(() => setSent(false), 4000);
+    } catch {
+      setError(true);
+      setTimeout(() => setError(false), 4000);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -180,10 +202,11 @@ export default function Contact() {
             className="md:col-span-3"
           >
             <div className="p-6 md:p-8 rounded-2xl bg-white/[0.03] border border-white/10">
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <InputField
                     label="Name"
+                    name="from_name"
                     placeholder="Your name"
                     value={form.name}
                     onChange={(v) => setForm({ ...form, name: v })}
@@ -191,6 +214,7 @@ export default function Contact() {
                   />
                   <InputField
                     label="Email"
+                    name="from_email"
                     type="email"
                     placeholder="your@email.com"
                     value={form.email}
@@ -200,6 +224,7 @@ export default function Contact() {
                 </div>
                 <InputField
                   label="Subject"
+                  name="subject"
                   placeholder="What's this about?"
                   value={form.subject}
                   onChange={(v) => setForm({ ...form, subject: v })}
@@ -215,6 +240,7 @@ export default function Contact() {
                   >
                     <textarea
                       required
+                      name="message"
                       rows={5}
                       placeholder="Tell me about your project..."
                       value={form.message}
@@ -228,35 +254,35 @@ export default function Contact() {
 
                 <motion.button
                   type="submit"
-                  disabled={sent}
+                  disabled={sent || sending}
                   className={`w-full py-3.5 rounded-xl font-medium flex items-center justify-center gap-2 text-sm transition-all ${
                     sent
                       ? "bg-green-500/15 border border-green-500/30 text-green-400 cursor-default"
+                      : error
+                      ? "bg-red-500/15 border border-red-500/30 text-red-400 cursor-default"
+                      : sending
+                      ? "bg-white/5 border border-white/10 text-slate-400 cursor-wait"
                       : "bg-gradient-to-r from-violet-600 to-cyan-600 text-white shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 hover:opacity-95"
                   }`}
-                  whileHover={!sent ? { scale: 1.01 } : {}}
-                  whileTap={!sent ? { scale: 0.99 } : {}}
+                  whileHover={!sent && !sending ? { scale: 1.01 } : {}}
+                  whileTap={!sent && !sending ? { scale: 0.99 } : {}}
                 >
                   <AnimatePresence mode="wait">
                     {sent ? (
-                      <motion.span
-                        key="sent"
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        className="flex items-center gap-2"
-                      >
+                      <motion.span key="sent" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="flex items-center gap-2">
                         <CheckCircle size={17} />
                         Message Sent Successfully!
                       </motion.span>
+                    ) : error ? (
+                      <motion.span key="error" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="flex items-center gap-2">
+                        Failed to send. Try again.
+                      </motion.span>
+                    ) : sending ? (
+                      <motion.span key="sending" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="flex items-center gap-2">
+                        Sending...
+                      </motion.span>
                     ) : (
-                      <motion.span
-                        key="send"
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        className="flex items-center gap-2"
-                      >
+                      <motion.span key="send" initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="flex items-center gap-2">
                         <Send size={16} />
                         Send Message
                       </motion.span>

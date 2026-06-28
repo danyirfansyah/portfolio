@@ -13,8 +13,8 @@ const roles = [
 ];
 
 const socials = [
-  { icon: IconBrandGithub, href: "https://github.com", label: "GitHub" },
-  { icon: IconBrandLinkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  { icon: IconBrandGithub, href: "https://github.com/danyirfansyah", label: "GitHub" },
+  { icon: IconBrandLinkedin, href: "https://www.linkedin.com/in/dany-irfansyah/", label: "LinkedIn" },
   { icon: Mail, href: "mailto:danyirfansyah23@gmail.com", label: "Email" },
 ];
 

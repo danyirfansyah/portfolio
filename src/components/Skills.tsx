@@ -25,11 +25,11 @@ const skillCategories = [
     bgColor: "bg-cyan-500/10",
     borderColor: "border-cyan-500/20",
     skills: [
-      { name: "Node.js / Express", level: 82 },
-      { name: "Python / FastAPI", level: 72 },
-      { name: "PostgreSQL", level: 74 },
-      { name: "MongoDB", level: 68 },
-      { name: "REST / GraphQL", level: 80 },
+      { name: "Node.js / Express", level: 48 },
+      { name: "Python / FastAPI", level: 42 },
+      { name: "PostgreSQL", level: 45 },
+      { name: "MongoDB", level: 38 },
+      { name: "REST API", level: 47 },
     ],
   },
   {
@@ -40,9 +40,9 @@ const skillCategories = [
     borderColor: "border-emerald-500/20",
     skills: [
       { name: "Git & GitHub", level: 88 },
-      { name: "Docker", level: 66 },
+      { name: "Docker", level: 44 },
       { name: "Figma", level: 73 },
-      { name: "AWS / Vercel", level: 62 },
+      { name: "Vercel", level: 65 },
       { name: "CI/CD Pipelines", level: 65 },
     ],
   },
@@ -82,8 +82,8 @@ function SkillBar({
 
 const techStack = [
   "Next.js", "React", "TypeScript", "Node.js", "Python",
-  "PostgreSQL", "MongoDB", "Docker", "AWS", "Figma",
-  "GraphQL", "Tailwind CSS", "Prisma", "Redis", "Git",
+  "MongoDB", "Docker", "Figma",
+  "Tailwind CSS", "Git",
 ];
 
 export default function Skills() {

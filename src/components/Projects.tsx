@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { ExternalLink, Star } from "lucide-react";
 import { IconBrandGithub } from "@tabler/icons-react";
@@ -12,17 +13,19 @@ const projects = [
       "Platform web untuk mahasiswa baru, mahasiswa S1 dan S2, serta pengelolaan pembayaran kampus dalam satu sistem yang terintegrasi.",
     tech: ["Next.js", "Tailwind CSS"],
     featured: true,
+    image: "/images/seeds.png",
     github: "https://github.com",
-    live: "https://example.com",
+    live: "https://seeds.telkomuniversity.ac.id/auth/login",
   },
   {
-    title: "Socialog",
+    title: "Danantara",
     description:
-      "Website kuis interaktif untuk kelas SMP dan SMA pada mata pelajaran IPS dan PPKN, dirancang untuk membuat pembelajaran lebih menyenangkan.",
-    tech: ["TypeScript", "JavaScript", "HTML"],
+      "Platform intelijen investasi Danantara (DIIP) dengan fitur peta ekonomi interaktif untuk memvisualisasikan dan menganalisis sebaran investasi di seluruh Indonesia.",
+    tech: ["Next.js", "TypeScript", "Tailwind CSS"],
     featured: true,
-    github: "https://github.com/danyirfansyah/socialog.git",
-    live: "https://example.com",
+    image: "/images/Danantara.png",
+    github: "https://github.com",
+    live: "https://diip-os.digibox.ai/economic-map",
   },
   {
     title: "Swiftstay",
@@ -30,16 +33,18 @@ const projects = [
       "Platform pencarian kos-kosan di sekitar Telkom University Bandung, memudahkan mahasiswa menemukan hunian yang sesuai kebutuhan.",
     tech: ["PHP", "Blade", "CSS"],
     featured: false,
+    image: null,
     github: "https://github.com/danyirfansyah/Swiftstay.git",
     live: "https://example.com",
   },
   {
-    title: "Staify",
+    title: "Socialog",
     description:
-      "Website pelaporan mahasiswa untuk pengelolaan kampus, mencakup fitur upload prestasi, pembuatan jadwal, dan berbagai kebutuhan akademik.",
-    tech: ["HTML", "CSS", "JavaScript"],
+      "Website kuis interaktif untuk kelas SMP dan SMA pada mata pelajaran IPS dan PPKN, dirancang untuk membuat pembelajaran lebih menyenangkan.",
+    tech: ["TypeScript", "JavaScript", "HTML"],
     featured: false,
-    github: "https://github.com/danyirfansyah/Staify.git",
+    image: null,
+    github: "https://github.com/danyirfansyah/socialog.git",
     live: "https://example.com",
   },
 ];
@@ -60,60 +65,81 @@ function ProjectCard({
       initial={{ opacity: 0, y: 40 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.55, delay: index * 0.1 }}
-      className="group relative flex flex-col p-6 rounded-2xl bg-white/[0.03] border border-white/10 transition-all overflow-hidden"
+      className="group relative flex flex-col rounded-2xl bg-white/[0.03] border border-white/10 transition-all overflow-hidden"
       whileHover={{ y: -6 }}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <h3 className="text-white font-semibold text-base">{project.title}</h3>
-          {project.featured && (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs">
-              <Star size={10} fill="currentColor" />
-              Featured
+      {/* Image preview */}
+      {project.image ? (
+        <div className="relative w-full aspect-video overflow-hidden border-b border-white/10">
+          <Image
+            src={project.image}
+            alt={project.title}
+            fill
+            className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        </div>
+      ) : (
+        <div className="relative w-full aspect-video border-b border-white/10 bg-white/[0.02] flex items-center justify-center">
+          <span className="text-slate-600 text-xs">No preview available</span>
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="flex flex-col p-6 flex-1">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <h3 className="text-white font-semibold text-base">{project.title}</h3>
+            {project.featured && (
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs">
+                <Star size={10} fill="currentColor" />
+                Featured
+              </span>
+            )}
+          </div>
+          <div className="flex gap-1.5 shrink-0">
+            <motion.a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label="GitHub"
+            >
+              <IconBrandGithub size={14} />
+            </motion.a>
+            <motion.a
+              href={project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label="Live Demo"
+            >
+              <ExternalLink size={14} />
+            </motion.a>
+          </div>
+        </div>
+
+        <p className="text-slate-400 text-sm leading-relaxed mb-5 flex-1">
+          {project.description}
+        </p>
+
+        {/* Tech stack */}
+        <div className="flex flex-wrap gap-1.5">
+          {project.tech.map((t) => (
+            <span
+              key={t}
+              className="px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/10 text-slate-400 text-xs"
+            >
+              {t}
             </span>
-          )}
+          ))}
         </div>
-        <div className="flex gap-1.5 shrink-0">
-          <motion.a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label="GitHub"
-          >
-            <IconBrandGithub size={14} />
-          </motion.a>
-          <motion.a
-            href={project.live}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label="Live Demo"
-          >
-            <ExternalLink size={14} />
-          </motion.a>
-        </div>
-      </div>
-
-      <p className="text-slate-400 text-sm leading-relaxed mb-5 flex-1">
-        {project.description}
-      </p>
-
-      {/* Tech stack */}
-      <div className="flex flex-wrap gap-1.5">
-        {project.tech.map((t) => (
-          <span
-            key={t}
-            className="px-2.5 py-0.5 rounded-full bg-white/[0.05] border border-white/10 text-slate-400 text-xs"
-          >
-            {t}
-          </span>
-        ))}
       </div>
     </motion.div>
   );
@@ -158,7 +184,7 @@ export default function Projects() {
           className="text-center"
         >
           <motion.a
-            href="https://github.com"
+            href="https://github.com/danyirfansyah"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/15 text-slate-300 hover:text-white hover:border-violet-400/40 hover:bg-violet-500/5 transition-all text-sm"
